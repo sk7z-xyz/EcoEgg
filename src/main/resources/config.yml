@@ -49,3 +49,10 @@ WorldGuard:
   Enabled: false
 IgnoreEntity:
   - 'WARDEN'
+
+Database:
+  type: "sqlite"
+  name: "egg.db"
+  server: "localhost:port"
+  user: "user"
+  pass: "pass"

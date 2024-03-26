@@ -137,8 +137,10 @@ public class CreateMob {
             if (entity instanceof Zombie || entity instanceof Skeleton) {
                 createEntityEquipment();
             }
-
             createPotionEffect();
+
+            load.saveCnf();
+
         } catch (Exception e) {
             if (!isOldFormatEgg()) {
                 //復元に失敗した場合はキャンセルする
@@ -238,7 +240,6 @@ public class CreateMob {
             Utl.sendPluginMessage(plg, player, "インベントリ復元処理をスキップしました");
             return;
         }
-
         EntityEquipment entityEquipment = entity.getEquipment();
         List<Map<?, ?>> serialize_entityEquipment = load.getEntityEquipment();
         SimpleEquipment simpleEquipment = SimpleEquipment.deserialize((Map<String, Object>) serialize_entityEquipment.get(0));

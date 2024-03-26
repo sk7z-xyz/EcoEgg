@@ -34,6 +34,7 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -61,7 +62,7 @@ public class HatchingListener extends ListenerFrame {
 
     /**
      * プレイヤーエンティティ作用イベント
-     *
+     * えこたまごからモンスターエッグ作成
      * @param event
      */
     @EventHandler(priority = EventPriority.LOWEST)
@@ -192,7 +193,14 @@ public class HatchingListener extends ListenerFrame {
 
         egg = new ItemStack(Material.matchMaterial("minecraft:" + entity.getType().getName() + "_spawn_egg"));//雑い
 
-        LoaderMob save = new LoaderMob((EcoEgg) plg, le.getUniqueId());
+        LoaderMob save;
+        try {
+            save = new LoaderMob((EcoEgg) plg, le.getUniqueId());
+        }catch (SQLException e){
+
+            Utl.sendPluginMessage(plg,event.getPlayer(),"データベースへの接続に失敗しました。");
+            return;
+        }
         SaveMob saveMob = new SaveMob(le, player, loc, save, plg);
         saveMob.save();
         if (saveMob.isCancel()) {
@@ -242,7 +250,7 @@ public class HatchingListener extends ListenerFrame {
 
     /**
      * プレイヤー作用イベントハンドラ
-     *
+     * モンスターエッグ孵化処理
      * @param event
      */
     @EventHandler(priority = EventPriority.LOWEST)
@@ -303,7 +311,14 @@ public class HatchingListener extends ListenerFrame {
         String least = token[token.length - 1];
 
         // MOBのyaml情報を取得
-        LoaderMob load = new LoaderMob((EcoEgg) plg, new UUID(Long.parseLong(most), Long.parseLong(least)));
+        LoaderMob load;
+        try {
+            load = new LoaderMob((EcoEgg) plg, new UUID(Long.parseLong(most), Long.parseLong(least)));
+        }catch (SQLException e){
+            e.printStackTrace();
+            Utl.sendPluginMessage(plg,event.getPlayer(),"データベースへの接続に失敗しました。");
+            return;
+        }
 
         // 使用済みなら不正アイテム、ただしOPは問題なし
         if (load.getUsed()) {
@@ -327,7 +342,6 @@ public class HatchingListener extends ListenerFrame {
 
 
         // MOBスポーン処理
-
         Location loc = block.getLocation();
         BlockFace blockface = event.getBlockFace();
 
@@ -349,6 +363,14 @@ public class HatchingListener extends ListenerFrame {
         SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         load.saveUse(player.getName(), livingEntity.getType().name(), sdf1.format(date));
         load.setUsed(true);
+        try {
+            load.saveCnf();
+        } catch (SQLException e) {
+            livingEntity.remove();
+            e.printStackTrace();
+            Utl.sendPluginMessage(plg, event.getPlayer(), "データベースへの接続に失敗しました。");
+            return;
+        }
 
         if (player.getGameMode() != GameMode.CREATIVE) {
             if (event.getHand() == EquipmentSlot.HAND) {

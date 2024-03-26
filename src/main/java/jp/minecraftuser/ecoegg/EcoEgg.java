@@ -9,7 +9,10 @@ import com.sk89q.worldguard.protection.flags.Flag;
 import com.sk89q.worldguard.protection.flags.StateFlag;
 import com.sk89q.worldguard.protection.flags.registry.FlagRegistry;
 import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import jp.minecraftuser.ecoegg.command.*;
+import jp.minecraftuser.ecoegg.db.EcoEggDB;
 import jp.minecraftuser.ecoegg.listener.*;
 import jp.minecraftuser.ecoframework.CommandFrame;
 import jp.minecraftuser.ecoegg.config.EcoEggConfig;
@@ -73,6 +76,13 @@ public class EcoEgg extends PluginFrame {
         EcoEggConfig con = new EcoEggConfig(this);
         con.registerBoolean("WorldGuard.Enabled");
         con.registerArrayString("IgnoreEntity");
+
+        con.registerBoolean("Database.user");
+        con.registerString("Database.type");
+        con.registerString("Database.name");
+        con.registerString("Database.server");
+        con.registerString("Database.user");
+        con.registerString("Database.pass");
         registerPluginConfig(con);
     }
 
@@ -176,6 +186,29 @@ public class EcoEgg extends PluginFrame {
         }
 
         return (WorldGuardPlugin) plugin;
+    }
+
+    @Override
+    public void initializeDB() {
+        EcoEggConfig conf = (EcoEggConfig) getDefaultConfig();
+
+        try {
+            if (conf.getString("Database.type").equalsIgnoreCase("sqlite")) {
+                registerPluginDB(new EcoEggDB(this, conf.getString("Database.name"), "egg"));
+            } else if (conf.getString("Database.type").equalsIgnoreCase("mysql")) {
+                registerPluginDB(new EcoEggDB(this,
+                        conf.getString("Database.server"),
+                        conf.getString("Database.user"),
+                        conf.getString("Database.pass"),
+                        conf.getString("Database.name"),
+                        "egg"));
+            }
+            // configにデータ読み込み
+            EcoEggConfig cnf = (EcoEggConfig) getDefaultConfig();
+            cnf.loadDatabase();
+        } catch (Exception ex) {
+            Logger.getLogger(EcoEgg.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
 }

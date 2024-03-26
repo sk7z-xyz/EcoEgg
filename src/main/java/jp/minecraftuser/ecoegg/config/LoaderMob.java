@@ -1,6 +1,7 @@
 
 package jp.minecraftuser.ecoegg.config;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -20,13 +21,11 @@ public class LoaderMob extends LoaderYaml {
     private EcoEgg plg = null;
     private FileConfiguration list = null;
 
-    public LoaderMob(EcoEgg plg, UUID id) {
-        super(plg, "" + id.getMostSignificantBits() + "_" + id.getLeastSignificantBits() + ".yml");
-        this.plg = plg;
-        reloadCnf();
+    public LoaderMob(EcoEgg plg_, UUID uuid_) throws SQLException {
+        super(plg_, uuid_);
+        this.plg = plg_;
         list = getCnf();
         list.options().copyDefaults(true);
-        saveCnf();
     }
 
     public void saveGen(String name, String type, String date, String version) {
@@ -34,7 +33,6 @@ public class LoaderMob extends LoaderYaml {
         list.set("gen_type", type);
         list.set("gen_date", date);
         list.set("gen_plugin_version", version);
-        saveCnf();
     }
 
     public boolean getUsed() {
@@ -49,7 +47,6 @@ public class LoaderMob extends LoaderYaml {
         list.set("use_user", name);
         list.set("use_type", type);
         list.set("use_date", date);
-        saveCnf();
     }
 
 
@@ -59,12 +56,10 @@ public class LoaderMob extends LoaderYaml {
 
     public void setDate(long date) {
         list.set("date", date);
-        saveCnf();
     }
 
     public void setUsed(boolean b) {
         list.set("used", b);
-        saveCnf();
     }
 
     public short getMobType() {
@@ -73,7 +68,7 @@ public class LoaderMob extends LoaderYaml {
 
     public void setMobType(short typeid) {
         list.set("mobid", typeid);
-        saveCnf();
+
     }
 
     public String getCustomName() {
@@ -82,7 +77,7 @@ public class LoaderMob extends LoaderYaml {
 
     public void setCustomName(String str) {
         list.set("name", str);
-        saveCnf();
+
     }
 
     public double getMaxHealth() {
@@ -91,7 +86,7 @@ public class LoaderMob extends LoaderYaml {
 
     public void setMaxHealth(double num) {
         list.set("maxhealth", num);
-        saveCnf();
+
     }
 
     public double getHealth() {
@@ -100,7 +95,7 @@ public class LoaderMob extends LoaderYaml {
 
     public void setHealth(double num) {
         list.set("health", num);
-        saveCnf();
+
     }
 
     public String getOwner() {
@@ -109,7 +104,7 @@ public class LoaderMob extends LoaderYaml {
 
     public void setOwner(String str) {
         list.set("owner", str);
-        saveCnf();
+
     }
 
     public int getMaxDomestication() {
@@ -118,7 +113,7 @@ public class LoaderMob extends LoaderYaml {
 
     public void setMaxDomestication(int num) {
         list.set("maxdomestication", num);
-        saveCnf();
+
     }
 
     public int getDomestication() {
@@ -127,7 +122,7 @@ public class LoaderMob extends LoaderYaml {
 
     public void setDomestication(int num) {
         list.set("domestication", num);
-        saveCnf();
+
     }
 
     public int getAge() {
@@ -136,7 +131,7 @@ public class LoaderMob extends LoaderYaml {
 
     public void setAge(int num) {
         list.set("age", num);
-        saveCnf();
+
     }
 
     public DyeColor getSheepColor() {
@@ -145,7 +140,7 @@ public class LoaderMob extends LoaderYaml {
 
     public void setSheepColor(DyeColor color) {
         list.set("sheepcolor", color.name());
-        saveCnf();
+
     }
 
     public Llama.Color getLlamaColor() {
@@ -154,7 +149,7 @@ public class LoaderMob extends LoaderYaml {
 
     public void setLlamaColor(Llama.Color color) {
         list.set("color", color.name());
-        saveCnf();
+
     }
 
     public int getLlamaStrength() {
@@ -163,7 +158,7 @@ public class LoaderMob extends LoaderYaml {
 
     public void setLlamaStrength(int strength) {
         list.set("strength", strength);
-        saveCnf();
+
     }
 
     public Horse.Style getStyle() {
@@ -172,7 +167,7 @@ public class LoaderMob extends LoaderYaml {
 
     public void setStyle(Horse.Style style) {
         list.set("style", style.name());
-        saveCnf();
+
     }
 
     public Horse.Color getHorseColor() {
@@ -181,7 +176,7 @@ public class LoaderMob extends LoaderYaml {
 
     public void setHorseColor(Horse.Color color) {
         list.set("color", color.name());
-        saveCnf();
+
     }
 
     public Horse.Variant getHorseVariant() {
@@ -190,7 +185,7 @@ public class LoaderMob extends LoaderYaml {
 
     public void SetHorseVariant(Horse.Variant var) {
         list.set("variant", var.name());
-        saveCnf();
+
     }
 
     public double getJumpStrength() {
@@ -199,7 +194,7 @@ public class LoaderMob extends LoaderYaml {
 
     public void setJumpStrength(double num) {
         list.set("jumpstrength", num);
-        saveCnf();
+
     }
 
     public double getSpeed() {
@@ -208,7 +203,7 @@ public class LoaderMob extends LoaderYaml {
 
     public void setSpeed(double num) {
         list.set("speed", num);
-        saveCnf();
+
     }
 
     public DyeColor getDyeColor() {
@@ -217,7 +212,7 @@ public class LoaderMob extends LoaderYaml {
 
     public void setDyeColor(DyeColor color) {
         list.set("collar", color.name());
-        saveCnf();
+
     }
 
     public Ocelot.Type getOcelotType() {
@@ -226,7 +221,7 @@ public class LoaderMob extends LoaderYaml {
 
     public void setOcelotType(Ocelot.Type cattype) {
         list.set("cattype", cattype.name());
-        saveCnf();
+
     }
 
     public boolean getPower() {
@@ -235,7 +230,7 @@ public class LoaderMob extends LoaderYaml {
 
     public void setPower(boolean power) {
         list.set("power", power);
-        saveCnf();
+
     }
 
     public Rabbit.Type getRabbitType() {
@@ -244,7 +239,7 @@ public class LoaderMob extends LoaderYaml {
 
     public void setRabbitType(Rabbit.Type rabbittype) {
         list.set("rabbittype", rabbittype.name());
-        saveCnf();
+
     }
 
     //typoしてる
@@ -255,7 +250,7 @@ public class LoaderMob extends LoaderYaml {
     //typoしてる
     public void setBreed(boolean breed) {
         list.set("bleed", breed);
-        saveCnf();
+
     }
 
     public Parrot.Variant getParrotVariant() {
@@ -265,7 +260,7 @@ public class LoaderMob extends LoaderYaml {
 
     public void setParrotVariant(Parrot.Variant variant) {
         list.set("parrotvariant", variant.name());
-        saveCnf();
+
     }
 
     public TropicalFish.Pattern getTropicalFishPattern() {
@@ -275,7 +270,7 @@ public class LoaderMob extends LoaderYaml {
 
     public void setTropicalFishPattern(TropicalFish.Pattern pattern) {
         list.set("tropicalfishpattern", pattern.name());
-        saveCnf();
+
     }
 
     public DyeColor getTropicalFishBodyColor() {
@@ -284,7 +279,7 @@ public class LoaderMob extends LoaderYaml {
 
     public void setTropicalFishBodyColor(DyeColor color) {
         list.set("tropicalfishbodycolor", color.name());
-        saveCnf();
+
     }
 
     public DyeColor getTropicalFishPatternColor() {
@@ -293,7 +288,7 @@ public class LoaderMob extends LoaderYaml {
 
     public void setTropicalFishPatternColor(DyeColor color) {
         list.set("tropicalfishpatterncolor", color.name());
-        saveCnf();
+
     }
 
     public List<Map<?, ?>> getEntityEquipment() {
@@ -303,7 +298,7 @@ public class LoaderMob extends LoaderYaml {
 
     public void setEntityEquipment(List<Map> entityEquipment) {
         list.set("entityequipment", entityEquipment);
-        saveCnf();
+
     }
 
     public List<Map<?, ?>> getPotionEffectList() {
@@ -313,7 +308,7 @@ public class LoaderMob extends LoaderYaml {
 
     public void savePotionEffectList(List<Map> potionEffectList) {
         list.set("potioneffectlist", potionEffectList);
-        saveCnf();
+
 
     }
 
@@ -323,7 +318,7 @@ public class LoaderMob extends LoaderYaml {
 
     public void setVillagerTradeList(List<Map> recipes) {
         list.set("villagersimpletradelist", recipes);
-        saveCnf();
+
     }
 
     /**
@@ -348,7 +343,7 @@ public class LoaderMob extends LoaderYaml {
 
     public void setVillagerProfession(Villager.Profession profession) {
         list.set("villagerprofession", profession.name());
-        saveCnf();
+
     }
 
     public int getVillagerLevel() {
@@ -357,13 +352,16 @@ public class LoaderMob extends LoaderYaml {
 
     public void setVillagerLevel(int villagerlevel) {
         list.set("villagerlevel", villagerlevel);
-        saveCnf();
+
     }
-    public int getVillagerExperience() { return list.getInt("villagerexperience"); }
+
+    public int getVillagerExperience() {
+        return list.getInt("villagerexperience");
+    }
 
     public void setVillagerExperience(int villagerexperience) {
-        list.set("villagerexperience",villagerexperience);
-        saveCnf();
+        list.set("villagerexperience", villagerexperience);
+
     }
 
     public boolean getChild() {
@@ -372,7 +370,7 @@ public class LoaderMob extends LoaderYaml {
 
     public void setChild(boolean child) {
         list.set("child", child);
-        saveCnf();
+
     }
 
     public boolean getAngry() {
@@ -382,7 +380,7 @@ public class LoaderMob extends LoaderYaml {
 
     public void setAngry(boolean angry) {
         list.set("angry", angry);
-        saveCnf();
+
     }
 
     public boolean getTamed() {
@@ -391,7 +389,7 @@ public class LoaderMob extends LoaderYaml {
 
     public void setTamed(boolean tamed) {
         list.set("tamed", tamed);
-        saveCnf();
+
     }
 
     public Panda.Gene getPandaMainGene() {
@@ -400,7 +398,7 @@ public class LoaderMob extends LoaderYaml {
 
     public void setPandaMainGene(Panda.Gene gene) {
         list.set("pandamaingene", gene.name());
-        saveCnf();
+
     }
 
     public Panda.Gene getPandaHiddenGene() {
@@ -409,7 +407,7 @@ public class LoaderMob extends LoaderYaml {
 
     public void setPandaHiddenGene(Panda.Gene gene) {
         list.set("pandahiddengene", gene.name());
-        saveCnf();
+
     }
 
     public Cat.Type getCatType() {
@@ -418,7 +416,7 @@ public class LoaderMob extends LoaderYaml {
 
     public void setCatType(Cat.Type type) {
         list.set("cattype", type.name());
-        saveCnf();
+
     }
 
     public Fox.Type getFoxType() {
@@ -427,7 +425,7 @@ public class LoaderMob extends LoaderYaml {
 
     public void setFoxType(Fox.Type type) {
         list.set("foxtype", type.name());
-        saveCnf();
+
     }
 
     public String getFoxFirstTrustedPlayer() {
@@ -436,7 +434,7 @@ public class LoaderMob extends LoaderYaml {
 
     public void setFoxFirstTrustedPlayer(String name) {
         list.set("foxfirsttrustedplayer", name);
-        saveCnf();
+
     }
 
     public String getFoxSecondTrustedPlayer() {
@@ -445,7 +443,7 @@ public class LoaderMob extends LoaderYaml {
 
     public void setFoxSecondTrustedPlayer(String name) {
         list.set("foxsecondtrustedplayer", name);
-        saveCnf();
+
     }
 
     public MushroomCow.Variant getMushroomCowVariant() {
@@ -454,26 +452,26 @@ public class LoaderMob extends LoaderYaml {
 
     public void setMushroomCowVariant(MushroomCow.Variant variant) {
         list.set("mushroomcowvariant", variant.name());
-        saveCnf();
     }
 
     public Axolotl.Variant getAxolotlVariant() {
         return Axolotl.Variant.valueOf(list.getString("axolotlvariant"));
     }
+
     public void setAxolotlVariant(Axolotl.Variant variant) {
         list.set("axolotlvariant", variant.name());
-        saveCnf();
     }
 
     public Frog.Variant getFrogVariant() {
         return Frog.Variant.valueOf(list.getString("frogvariant"));
     }
+
     public void setFrogVariant(Frog.Variant variant) {
         list.set("frogvariant", variant.name());
-        saveCnf();
     }
 
     public String getPluginVersion() {
         return list.getString("gen_plugin_version");
     }
+
 }

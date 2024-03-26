@@ -13,6 +13,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 
+import java.sql.SQLException;
 import java.util.UUID;
 
 import jp.minecraftuser.ecoframework.Utl;
@@ -67,15 +68,20 @@ public class EceInfoEggCommand extends CommandFrame {
         String least = token[token.length - 1];
 
         // MOBのyaml情報を取得
-        LoaderMob load = new LoaderMob((EcoEgg) plg, new UUID(Long.parseLong(most), Long.parseLong(least)));
+        try {
+            LoaderMob load = new LoaderMob((EcoEgg) plg, new UUID(Long.parseLong(most), Long.parseLong(least)));
+            CreateMob createMob = new CreateMob(player, Material.STONE, player.getLocation(), load, plg);
+            LivingEntity entity = createMob.create();
 
-        CreateMob createMob = new CreateMob(player, Material.STONE, player.getLocation(), load, plg);
-        LivingEntity entity = createMob.create();
+            InfoMob infoMob = new InfoMob(entity, player, plg);
+            infoMob.show();
+            entity.remove();
 
-        InfoMob infoMob = new InfoMob(entity, player, plg);
-        infoMob.show();
-
-        entity.remove();
+        }catch(SQLException e){
+            Utl.sendPluginMessage(plg, sender, "データベースへの接続に失敗しました。");
+            e.printStackTrace();
+            return false;
+        }
 
         return true;
     }

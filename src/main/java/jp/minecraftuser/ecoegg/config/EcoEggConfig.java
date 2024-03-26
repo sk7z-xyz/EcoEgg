@@ -1,11 +1,14 @@
 
 package jp.minecraftuser.ecoegg.config;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import jp.minecraftuser.ecoegg.DropParam;
+import jp.minecraftuser.ecoegg.db.EcoEggDB;
 import jp.minecraftuser.ecoframework.ConfigFrame;
 import jp.minecraftuser.ecoframework.PluginFrame;
 import org.bukkit.configuration.Configuration;
@@ -81,4 +84,11 @@ public class EcoEggConfig extends ConfigFrame {
     public String getDispName() { return this.bookdispname; }
     public String getAuthor() { return this.bookauthor; }
     public List<String> getPages() { return this.bookpage; }
+
+    public void loadDatabase() throws SQLException {
+        //これいる?
+        EcoEggDB db = (EcoEggDB) plg.getDB("egg");
+
+
+    }
 }

@@ -11,6 +11,7 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 
+import java.sql.SQLException;
 import java.util.*;
 
 public class SaveMob {
@@ -102,7 +103,15 @@ public class SaveMob {
             saveEntityEquipment();
         }
         savePotionEffect();
+        try {
+            //ここでDBに保存する
+            save.saveCnf();
+        } catch (SQLException e) {
+            Utl.sendPluginMessage(plg, player, "DB接続に失敗しました｡");
+            e.printStackTrace();
 
+            cancel = true;
+        }
 
     }
 

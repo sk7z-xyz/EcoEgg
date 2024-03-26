@@ -1,63 +1,60 @@
 package jp.minecraftuser.ecoegg.config;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
-import java.util.logging.Level;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.UUID;
 import java.util.logging.Logger;
+
+import jp.minecraftuser.ecoegg.db.EcoEggDB;
 import jp.minecraftuser.ecoframework.PluginFrame;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 /**
  * YAML読み込みクラス
+ *
  * @author ecolight
  */
 public class LoaderYaml {
     private PluginFrame plg = null;
-    private String filename = null;
+    private UUID uuid = null;
     protected Logger log = null;
 
     private FileConfiguration cnf = null;
-    private File cnfFile = null;
 
     /**
      * コンストラクタ
+     *
      * @param plg_
-     * @param filename_
+     * @param uuid_
      */
-    public LoaderYaml(PluginFrame plg_, String filename_) {
+    public LoaderYaml(PluginFrame plg_, UUID uuid_) {
         plg = plg_;
-        filename = filename_;
+        uuid = uuid_;
         log = plg.getLogger();
     }
 
     /**
      * コンフィグ再読み込み
      */
-    public void reloadCnf() {
-        // 無ければ新規作成する
-        if (cnfFile == null) {
-            cnfFile = new File(plg.getDataFolder(), this.filename);
-        }
-        // 現在の内容を読み込み
-        cnf = YamlConfiguration.loadConfiguration(cnfFile);
+    public void reloadCnf() throws SQLException {
+        EcoEggDB db = (EcoEggDB) plg.getDB("egg");
+        Connection con = db.connect();
 
-        // JARファイル内の初期値ファイルに書かれている値を取得してデフォルト値にする
-        InputStream defCnfStream = plg.getResource(this.filename);
-        if (defCnfStream != null) {
-            YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(new InputStreamReader(defCnfStream, StandardCharsets.UTF_8));
-            cnf.setDefaults(defConfig);
+        if (db.isExistData(con, uuid)) {
+            cnf = db.loadFromDB(con, uuid);
+        } else {
+            cnf = new YamlConfiguration();
         }
     }
 
     /**
      * 直接操作用にコンフィグインスタンスを取得する
+     *
      * @return コンフィグファイルインスタンス
      */
-    public FileConfiguration getCnf() {
+    public FileConfiguration getCnf() throws SQLException {
         /**
          * まだ未ロードであれば読み込んでから返す
          */
@@ -68,16 +65,17 @@ public class LoaderYaml {
     }
 
     /**
-     * セーブする
+     * データベースにセーブする
      */
-    public void saveCnf() {
-        // まだ読み込みされていない場合には何もしない
-        // R->Wが前提のため読み込みされていない状態はまだ保存すべき状態でないと断定する
-        if (cnf == null || cnfFile == null) return;
-        try {
-            cnf.save(cnfFile);
-        } catch (IOException ex) {
-            plg.getLogger().log(Level.SEVERE, "failed save configuration file. file=" + cnfFile, ex);
+    public void saveCnf() throws SQLException {
+        EcoEggDB db = (EcoEggDB) plg.getDB("egg");
+        Connection con = db.connect();
+        if (db.isExistData(con, uuid)) {
+            db.updateToDB(con, uuid, cnf);
+        } else {
+            db.insertToDB(con, uuid, cnf);
         }
+
     }
+
 }
